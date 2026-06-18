@@ -8,18 +8,21 @@ const burgerItems = [
     name: "Classic Burger",
     price: 65,
     description: "Juicy patty with cheddar, lettuce, tomato, and house sauce.",
+    image: "/images/burgers/classic-burger.png",
   },
   {
     id: "burger-2",
     name: "Spicy BBQ Burger",
     price: 75,
     description: "Smoky bacon, onion rings, and spicy BBQ sauce.",
+    image: "/images/burgers/spicy-bbq-burger.png",
   },
   {
     id: "burger-3",
     name: "Mushroom Swiss Burger",
     price: 80,
     description: "Caramelized mushrooms and Swiss cheese on a toasted bun.",
+    image: "/images/burgers/mushroom-swiss-burger.png",
   },
   {
     id: "burger-4",
@@ -27,6 +30,7 @@ const burgerItems = [
     price: 95,
     description:
       "Golden fried chicken breast with chipotle mayo and crispy slaw.",
+    image: "/images/burgers/crispy-chicken-burger.png",
   },
 ];
 
@@ -35,25 +39,29 @@ const drinkItems = [
     id: "drink-1",
     name: "Soda",
     price: 50,
-    description: "Classic cola or lemon-lime soda.",
+    description: "Refreshing classic cola served chilled.",
+    image: "/images/drinks/soda.png",
   },
   {
     id: "drink-2",
     name: "Iced Tea",
     price: 55,
     description: "Fresh brewed and lightly sweetened.",
+    image: "/images/drinks/iced-tea.png",
   },
   {
     id: "drink-3",
     name: "Sparkling Lemonade",
     price: 65,
     description: "Citrus refreshment with bubbles.",
+    image: "/images/drinks/sparkling-lemonade.png",
   },
   {
     id: "drink-4",
     name: "Mango Shake",
     price: 85,
     description: "Creamy blended mango with vanilla ice cream.",
+    image: "/images/drinks/mango-shake.png",
   },
 ];
 
@@ -80,7 +88,7 @@ export default function MenuPage() {
     <main
       style={{
         background: `linear-gradient(
-      color-mix(in srgb, var(--background) 80%, transparent), 
+      color-mix(in srgb, var(--background) 85%, transparent), 
       color-mix(in srgb, var(--background) 60%, transparent)
     ), url('/images/hero-bg.png') no-repeat left center / cover fixed`,
       }}

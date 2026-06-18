@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import {
   Card,
   CardContent,
   CardFooter,
-  CardHeader,
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
@@ -34,13 +34,30 @@ export default function ProductCard({
 
   return (
     <Card className="w-full">
-      <CardHeader>
-        <CardTitle>{product.name}</CardTitle>
-        <CardDescription>{product.description}</CardDescription>
-      </CardHeader>
       <CardContent>
-        <div className="flex items-center justify-between">
-          <div className="text-lg font-medium">₱{product.price.toFixed(2)}</div>
+        <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div className="order-2 sm:order-1 space-y-4">
+            <div>
+              <CardTitle className="text-2xl">{product.name}</CardTitle>
+              <CardDescription>{product.description}</CardDescription>
+            </div>
+            <div className="text-lg font-semibold">
+              ₱{product.price.toFixed(2)}
+            </div>
+          </div>
+          {product.image ? (
+            <div className="order-1 sm:order-2 flex items-center justify-center">
+              <div className="relative h-48 w-full overflow-hidden rounded-3xl bg-muted/70 sm:h-40 sm:w-48">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 640px) 100vw, 192px"
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
       </CardContent>
       <CardFooter>

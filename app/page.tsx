@@ -3,6 +3,14 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeMenu } from "@/components/ui/theme-button";
+import QRCode from "react-qr-code";
+
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://djmburgers.vercel.app"
+    : "http://localhost:3000";
+
+const qrValue = `${baseUrl}/menu`;
 
 export default function HomePage() {
   return (
@@ -15,7 +23,7 @@ export default function HomePage() {
       <section className="grid max-w-6xl w-full grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr]">
         <div />
 
-        <div className="flex h-full flex-col justify-center gap-8 rounded-[2rem] border border-border bg-card/60 p-10 shadow-xl shadow-slate-900/5">
+        <div className="flex h-full flex-col justify-center gap-8 rounded-[2rem] border border-border bg-card/65 p-10 shadow-xl shadow-slate-900/5">
           <div className="space-y-2">
             <p className="text-md font-bold tracking-[0.35em] text-primary">
               DJMBurgers
@@ -40,7 +48,7 @@ export default function HomePage() {
               className="rounded-[2rem] border border-border bg-white p-6 shadow-sm dark:bg-slate-950 flex items-center justify-center"
               style={{ width: 200, height: 200 }}
             >
-              <span className="text-4xl font-bold text-foreground">QR</span>
+              <QRCode value={qrValue} />
             </div>
 
             <Button asChild>
