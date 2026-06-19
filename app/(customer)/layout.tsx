@@ -1,7 +1,6 @@
 import { Hamburger } from "lucide-react";
 import { Navbar } from "@/components/ui/navbar";
-import { ThemeMenu } from "@/components/ui/theme-button";
-import { Toaster } from "@/components/ui/sonner";
+import { ThemeMenu } from "@/components/ui/theme-menu";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { CartProvider } from "@/providers/cart-provider";
+import { Footer } from "@/components/ui/footer";
 
 const navItems = [
   {
@@ -19,7 +19,7 @@ const navItems = [
     leftIcon: <Hamburger className="size-5" />,
     rightIcon: <Hamburger className="size-5" />,
     linkClassName:
-      "bg-primary text-primary-foreground shadow-sm px-4 py-2 text-lg font-semibold",
+      "bg-primary text-primary-foreground shadow-sm px-4 py-2 text-lg font-semibold cursor-default",
   },
 ];
 
@@ -53,10 +53,15 @@ export default function MenuLayout({
       <Navbar
         navItems={navItems}
         leftContent={<MenuCategoryDropdown />}
-        actions={<ThemeMenu className="border-none focus-visible:ring-0" />}
+        actions={
+          <ThemeMenu
+            className="border-none focus-visible:ring-0"
+            showIcon={false}
+          />
+        }
       />
       <main className="flex-1">{children}</main>
-      <Toaster position="bottom-left" />
+      <Footer />
     </CartProvider>
   );
 }

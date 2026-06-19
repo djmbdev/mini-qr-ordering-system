@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ThemeMenu } from "@/components/ui/theme-button";
+import { ThemeMenu } from "@/components/ui/theme-menu";
+import { motion, type Variants } from "motion/react";
 import QRCode from "react-qr-code";
 
+// Test purposes only, switches base url between production and local dev for the QR code link
 const baseUrl =
   process.env.NODE_ENV === "production"
     ? "https://djmburgers.vercel.app"
@@ -12,18 +12,28 @@ const baseUrl =
 
 const qrValue = `${baseUrl}/menu`;
 
+const cardVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
 export default function HomePage() {
   return (
     <main
       style={{
         background: `linear-gradient(to right, transparent 10%, color-mix(in srgb, var(--background) 60%, transparent) 70%), url('/images/hero-bg.png') no-repeat left center / cover fixed`,
       }}
-      className="min-h-dvh grid place-items-center px-4 py-6"
+      className="min-h-dvh grid place-items-center px-4 py-6 max-sm:bg-position-[15%_center]!"
     >
       <section className="grid max-w-6xl w-full grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr]">
         <div />
 
-        <div className="flex h-full flex-col justify-center gap-8 rounded-[2rem] border border-border bg-card/65 p-10 shadow-xl shadow-slate-900/5">
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex h-full flex-col justify-center gap-8 rounded-[2rem] border border-border bg-card/65 p-10 shadow-xl shadow-slate-900/5"
+        >
           <div className="space-y-2">
             <p className="text-md font-bold tracking-[0.35em] text-primary">
               DJMBurgers
@@ -50,15 +60,8 @@ export default function HomePage() {
             >
               <QRCode value={qrValue} />
             </div>
-
-            <Button asChild>
-              <a href="/menu" className="inline-flex items-center gap-2">
-                Go to menu
-                <ArrowRight className="size-4" />
-              </a>
-            </Button>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       <ThemeMenu

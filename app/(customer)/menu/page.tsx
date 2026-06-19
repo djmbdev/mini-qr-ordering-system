@@ -1,101 +1,156 @@
-import { GlassWater, Hamburger } from "lucide-react";
+"use client";
+
+import { useEffect, useState, type ReactNode } from "react";
+import { CheckCircle2, GlassWater, Hamburger, XCircle } from "lucide-react";
+import { motion, type Variants } from "motion/react";
 import CartSheet from "@/components/cart/cart-sheet";
 import ProductCard from "@/components/cart/product-card";
+import { animateOnce } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-const burgerItems = [
-  {
-    id: "burger-1",
-    name: "Classic Burger",
-    price: 65,
-    description: "Juicy patty with cheddar, lettuce, tomato, and house sauce.",
-    image: "/images/burgers/classic-burger.png",
-  },
-  {
-    id: "burger-2",
-    name: "Spicy BBQ Burger",
-    price: 75,
-    description: "Smoky bacon, onion rings, and spicy BBQ sauce.",
-    image: "/images/burgers/spicy-bbq-burger.png",
-  },
-  {
-    id: "burger-3",
-    name: "Mushroom Swiss Burger",
-    price: 80,
-    description: "Caramelized mushrooms and Swiss cheese on a toasted bun.",
-    image: "/images/burgers/mushroom-swiss-burger.png",
-  },
-  {
-    id: "burger-4",
-    name: "Crispy Chicken Burger",
-    price: 95,
-    description:
-      "Golden fried chicken breast with chipotle mayo and crispy slaw.",
-    image: "/images/burgers/crispy-chicken-burger.png",
-  },
-];
+interface RawProduct {
+  id: string;
+  name: string;
+  description: string;
+  price: number | string;
+  imageUrl: string;
+  category: string;
+}
 
-const drinkItems = [
-  {
-    id: "drink-1",
-    name: "Soda",
-    price: 50,
-    description: "Refreshing classic cola served chilled.",
-    image: "/images/drinks/soda.png",
-  },
-  {
-    id: "drink-2",
-    name: "Iced Tea",
-    price: 55,
-    description: "Fresh brewed and lightly sweetened.",
-    image: "/images/drinks/iced-tea.png",
-  },
-  {
-    id: "drink-3",
-    name: "Sparkling Lemonade",
-    price: 65,
-    description: "Citrus refreshment with bubbles.",
-    image: "/images/drinks/sparkling-lemonade.png",
-  },
-  {
-    id: "drink-4",
-    name: "Mango Shake",
-    price: 85,
-    description: "Creamy blended mango with vanilla ice cream.",
-    image: "/images/drinks/mango-shake.png",
-  },
-];
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+}
 
-const categories = [
+interface Category {
+  id: string;
+  title: string;
+  description: string;
+  icon: ReactNode;
+}
+
+interface GroupedCategory extends Category {
+  items: Product[];
+}
+
+const categories: Category[] = [
   {
     id: "burgers",
     title: "Burgers",
     description:
       "Handcrafted patties served with fresh buns and seasonal toppings.",
     icon: <Hamburger className="size-5 text-primary" />,
-    items: burgerItems,
   },
   {
     id: "drinks",
     title: "Drinks",
     description: "Chilled beverages to pair with your order.",
     icon: <GlassWater className="size-5 text-primary" />,
-    items: drinkItems,
   },
 ];
 
+const introVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
+const categorySectionVariants: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut", delay: 0.3 },
+  },
+};
+
+const containerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.5,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
 export default function MenuPage() {
+  const [groupedCategories, setGroupedCategories] = useState<GroupedCategory[]>(
+    [],
+  );
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products");
+        if (!res.ok) throw new Error("Failed to fetch products");
+
+        const products: RawProduct[] = await res.json();
+        if (!isMounted) return;
+
+        const grouped: GroupedCategory[] = categories.map(
+          (category: Category): GroupedCategory => ({
+            ...category,
+            items: products
+              .filter((product: RawProduct) => product.category === category.id)
+              .map(
+                (product: RawProduct): Product => ({
+                  id: product.id,
+                  name: product.name,
+                  description: product.description,
+                  price: Number(product.price),
+                  image: product.imageUrl,
+                }),
+              ),
+          }),
+        );
+
+        setGroupedCategories(grouped);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      }
+    }
+
+    fetchProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <main
       style={{
         background: `linear-gradient(
-      color-mix(in srgb, var(--background) 85%, transparent), 
-      color-mix(in srgb, var(--background) 60%, transparent)
-    ), url('/images/hero-bg.png') no-repeat left center / cover fixed`,
+          color-mix(in srgb, var(--background) 85%, transparent), 
+          color-mix(in srgb, var(--background) 60%, transparent)
+        ), url('/images/hero-bg.png') no-repeat left center / cover fixed`,
       }}
-      className="px-4 pb-12 pt-32 sm:px-6 lg:px-8"
+      className="px-4 pb-12 pt-32 sm:px-6 lg:px-8 min-h-screen max-sm:bg-position-[15%_center]!"
     >
       <section className="mx-auto mb-14 max-w-6xl">
-        <div className="space-y-3 text-center">
+        <motion.div
+          className="space-y-3 text-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: animateOnce, amount: 0.3 }}
+          variants={introVariants}
+        >
           <p className="text-sm uppercase tracking-[0.3em] text-primary">
             Menu
           </p>
@@ -106,38 +161,53 @@ export default function MenuPage() {
             Choose between signature burgers and refreshingly cold drinks. Tap
             the &quot;Add to cart&quot; button to add it to your cart instantly.
           </p>
-        </div>
+        </motion.div>
       </section>
-
       <section id="menu" className="mx-auto max-w-6xl space-y-10">
-        {categories.map((category) => (
-          <section
-            key={category.id}
-            id={category.id}
-            className="rounded-[2rem] border border-border bg-card/60 p-6 shadow-sm"
-          >
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <div className="mb-2 flex items-center gap-3 text-2xl font-semibold text-foreground">
-                  {category.icon}
-                  <span>{category.title}</span>
+        {groupedCategories.length > 0 &&
+          groupedCategories.map((category: GroupedCategory) => (
+            <motion.section
+              key={category.id}
+              id={category.id}
+              className="rounded-[2rem] border border-border bg-card/60 p-6 shadow-sm"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: animateOnce, amount: 0.2 }}
+              variants={categorySectionVariants}
+            >
+              <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <div className="mb-2 flex items-center gap-3 text-2xl font-semibold text-foreground">
+                    {category.icon}
+                    <span>{category.title}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {category.description}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {category.description}
-                </p>
               </div>
-            </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              {category.items.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </section>
-        ))}
+              <motion.div
+                className="grid gap-4 sm:grid-cols-2"
+                variants={containerVariants}
+              >
+                {category.items.map((product: Product) => (
+                  <motion.div key={product.id} variants={itemVariants}>
+                    <ProductCard product={product} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.section>
+          ))}
       </section>
-
       <CartSheet />
+      <Toaster
+        position={isMobile ? "top-center" : "bottom-left"}
+        icons={{
+          success: <CheckCircle2 className="size-4 text-green-500" />,
+          error: <XCircle className="size-4 text-red-500" />,
+        }}
+      />
     </main>
   );
 }

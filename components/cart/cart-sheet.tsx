@@ -7,7 +7,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetFooter,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/providers/cart-provider";
@@ -20,22 +19,48 @@ export default function CartSheet() {
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
-  const simulatePayment = async () => {
+  // Single entry point for open/close so every close path clears the leftover message
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+    if (!nextOpen) setResult(null);
+  };
+
+  const submitOrder = async () => {
     setProcessing(true);
     setResult(null);
-    await new Promise((r) => setTimeout(r, 800));
-    const success = Math.random() > 0.25;
-    if (success) {
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          totalAmount: total,
+          items: items.map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Order submission failed", response.status);
+        setResult("failure");
+        return;
+      }
+
       setResult("success");
       clearCart();
-    } else {
+    } catch (error) {
+      console.error("Order submission failed", error);
       setResult("failure");
+    } finally {
+      setProcessing(false);
     }
-    setProcessing(false);
   };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <div className="fixed bottom-6 right-6 z-50">
         <SheetTrigger asChild>
           <Button
@@ -49,7 +74,7 @@ export default function CartSheet() {
         </SheetTrigger>
       </div>
 
-      <SheetContent side="right">
+      <SheetContent side="right" className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Cart</SheetTitle>
         </SheetHeader>
@@ -107,40 +132,30 @@ export default function CartSheet() {
 
             <div className="mt-4 flex gap-2">
               <Button
-                onClick={simulatePayment}
+                onClick={submitOrder}
                 disabled={items.length === 0 || processing}
                 className="flex-1"
               >
                 {processing ? "Processing..." : "Complete Order"}
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
+              <Button variant="outline" onClick={() => handleOpenChange(false)}>
                 Close
               </Button>
             </div>
 
             {result === "success" && (
               <div className="mt-3 text-sm text-green-600">
-                Payment successful — order placed.
+                Order placed successfully.
               </div>
             )}
+            {/* Test purposes only, order failed limit reached */}
             {result === "failure" && (
               <div className="mt-3 text-sm text-red-600">
-                Payment failed — please try again.
+                Order failed, limit reached.
               </div>
             )}
           </div>
         </div>
-
-        <SheetFooter>
-          <div className="text-xs text-muted-foreground">
-            This is a mock payment flow for demo purposes.
-          </div>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   );

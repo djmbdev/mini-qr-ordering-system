@@ -1,7 +1,9 @@
+import { AppSidebar } from "@/components/ui/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin - Mini QR Ordering System",
+  title: "Admin | DJMBurgers",
 };
 
 export default function AdminLayout({
@@ -9,5 +11,10 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <section className="min-h-screen">{children}</section>;
+  return (
+    <SidebarProvider className="flex">
+      <AppSidebar />
+      <main className="flex-1">{children}</main>
+    </SidebarProvider>
+  );
 }

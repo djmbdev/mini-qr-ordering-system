@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,10 +25,12 @@ export function ThemeMenu({
   className,
   label = "Theme",
   variant = "ghost",
+  showIcon = true,
 }: {
   className?: string;
   label?: string;
   variant?: ButtonVariant;
+  showIcon?: boolean;
 }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -53,9 +56,13 @@ export function ThemeMenu({
         <Button
           variant={variant}
           size="sm"
-          className={cn(className, "active:translate-y-0")}
+          className={cn(
+            className,
+            "active:translate-y-0 inline-flex items-center gap-2",
+          )}
           aria-label="Select theme"
         >
+          {showIcon && <Settings className="size-4" />}
           {label}
         </Button>
       </DropdownMenuTrigger>
