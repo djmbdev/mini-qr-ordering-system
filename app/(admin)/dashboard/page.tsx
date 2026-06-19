@@ -798,7 +798,7 @@ export default function DashboardPage() {
               </div>
 
               <div className="rounded-md border overflow-auto max-h-[50vh]">
-                <Table className="table-fixed">
+                <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[46%] text-left align-middle">

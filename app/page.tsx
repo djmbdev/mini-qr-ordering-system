@@ -36,7 +36,7 @@ export default function HomePage() {
   return (
     <main
       style={{
-        background: `linear-gradient(to right, transparent 10%, color-mix(in srgb, var(--background) 60%, transparent) 70%), url('/images/hero-bg.png') no-repeat left center / cover fixed`,
+        background: `linear-gradient(to right, transparent 10%, color-mix(in srgb, var(--background) 60%, transparent) 70%), url('/images/hero-bg.png') no-repeat left center / cover`,
       }}
       className="min-h-dvh grid place-items-center px-4 py-6 max-sm:bg-position-[15%_center]!"
     >

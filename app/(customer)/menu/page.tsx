@@ -141,7 +141,7 @@ export default function MenuPage() {
           color-mix(in srgb, var(--background) 60%, transparent)
         ), url('/images/hero-bg.png') no-repeat left center / cover fixed`,
       }}
-      className="px-4 pb-12 pt-32 sm:px-6 lg:px-8 min-h-screen max-sm:bg-position-[15%_center]!"
+      className="px-4 pb-12 pt-32 sm:px-6 lg:px-8 min-h-screen max-sm:bg-none! max-sm:bg-scroll!"
     >
       <section className="mx-auto mb-14 max-w-6xl">
         <motion.div
@@ -158,8 +158,8 @@ export default function MenuPage() {
             Browse our full selection
           </h1>
           <p className="mx-auto max-w-2xl text-base text-muted-foreground">
-            Choose between signature burgers and refreshingly cold drinks. Tap
-            the &quot;Add to cart&quot; button to add it to your cart instantly.
+            Choose between signature burgers and refreshingly cold drinks,
+            paired perfectly for every craving. Order now!
           </p>
         </motion.div>
       </section>
@@ -172,7 +172,7 @@ export default function MenuPage() {
               className="rounded-[2rem] border border-border bg-card/60 p-6 shadow-sm"
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: animateOnce, amount: 0.2 }}
+              viewport={{ once: animateOnce, amount: isMobile ? 0 : 0.2 }}
               variants={categorySectionVariants}
             >
               <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
