@@ -53,7 +53,13 @@ export function trimToDigits(value: string): string {
   return value.replace(/\D/g, "");
 }
 
-export function downloadSvgAsPng(svg: SVGElement, filename: string, scale = 4) {
+export function downloadSvgAsPng(
+  svg: SVGElement,
+  filename: string,
+  options?: { scale?: number; padding?: number; background?: string },
+) {
+  const { scale = 4, padding = 16, background = "#ffffff" } = options ?? {};
+
   const svgData = new XMLSerializer().serializeToString(svg);
   const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(svgBlob);
@@ -63,10 +69,21 @@ export function downloadSvgAsPng(svg: SVGElement, filename: string, scale = 4) {
   const img = new Image();
 
   img.onload = () => {
-    canvas.width = img.width * scale;
-    canvas.height = img.height * scale;
-    ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-    URL.revokeObjectURL(url); // cleanup, no longer needed once drawn
+    const qrWidth = img.width * scale;
+    const qrHeight = img.height * scale;
+    const pad = padding * scale;
+
+    canvas.width = qrWidth + pad * 2;
+    canvas.height = qrHeight + pad * 2;
+
+    if (ctx) {
+      // White or chosen color background, including the quiet-zone border
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, pad, pad, qrWidth, qrHeight);
+    }
+
+    URL.revokeObjectURL(url);
 
     const pngFile = canvas.toDataURL("image/png");
     const link = document.createElement("a");

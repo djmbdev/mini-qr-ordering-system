@@ -26,7 +26,11 @@ export default function HomePage() {
 
   const handleDownload = () => {
     const svg = qrRef.current?.querySelector("svg");
-    if (svg) downloadSvgAsPng(svg, "qrcode.png");
+    if (svg)
+      downloadSvgAsPng(svg, "qrcode.png", {
+        padding: 24,
+        background: "#fff",
+      });
   };
 
   return (
