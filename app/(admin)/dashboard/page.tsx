@@ -567,7 +567,7 @@ export default function DashboardPage() {
 
   return (
     <SidebarInset className="flex flex-col min-h-screen">
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+      <header className="flex h-16 shrink-0 bg-header items-center gap-2 border-b px-4">
         <SidebarTrigger className="-ml-1" />
         <div className="flex-1">
           <SearchForm
