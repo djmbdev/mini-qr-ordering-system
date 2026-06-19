@@ -1,7 +1,11 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { ThemeMenu } from "@/components/ui/theme-menu";
+import { downloadSvgAsPng } from "@/lib/utils";
+import { Download } from "lucide-react";
 import { motion, type Variants } from "motion/react";
+import { useRef } from "react";
 import QRCode from "react-qr-code";
 
 // Test purposes only, switches base url between production and local dev for the QR code link
@@ -18,6 +22,13 @@ const cardVariants: Variants = {
 };
 
 export default function HomePage() {
+  const qrRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = () => {
+    const svg = qrRef.current?.querySelector("svg");
+    if (svg) downloadSvgAsPng(svg, "qrcode.png");
+  };
+
   return (
     <main
       style={{
@@ -55,11 +66,20 @@ export default function HomePage() {
             </div>
 
             <div
-              className="rounded-[2rem] border border-border bg-white p-6 shadow-sm dark:bg-slate-950 flex items-center justify-center"
+              ref={qrRef}
+              className="rounded-[2rem] border border-border bg-white p-6 shadow-sm flex items-center justify-center"
               style={{ width: 200, height: 200 }}
             >
               <QRCode value={qrValue} />
             </div>
+            <Button
+              onClick={handleDownload}
+              variant="outline"
+              className="rounded-full"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download QR Code
+            </Button>
           </div>
         </motion.div>
       </section>
