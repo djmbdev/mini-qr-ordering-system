@@ -2,6 +2,8 @@
 
 A responsive, full-stack QR code-based burger restaurant ordering system built with Next.js, Prisma, PostgreSQL, and modern React development. Customers can scan a QR code to access the digital menu, place orders, and simulate a real-world ordering experience, while administrators can manage incoming orders and update payment statuses through an admin dashboard.
 
+https://github.com/user-attachments/assets/eb47eaec-df09-4231-b8fa-02b04d09efc7
+
 ---
 
 ## ✨ Features
