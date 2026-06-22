@@ -2,7 +2,7 @@
 
 A responsive, full-stack QR code-based burger restaurant ordering system built with Next.js, Prisma, PostgreSQL, and modern React development. Customers can scan a QR code to access the digital menu, place orders, and simulate a real-world ordering experience, while administrators can manage incoming orders and update payment statuses through an admin dashboard.
 
-https://github.com/user-attachments/assets/eb47eaec-df09-4231-b8fa-02b04d09efc7
+https://github.com/user-attachments/assets/ef7eb645-58cc-4bba-9144-ee522bb9543c
 
 ---
 
@@ -10,23 +10,30 @@ https://github.com/user-attachments/assets/eb47eaec-df09-4231-b8fa-02b04d09efc7
 
 ### Customer
 
-* QR code redirects customers directly to the menu page
-* Browse the burger menu
-* Add items to the cart
-* Update item quantities
-* Remove items from the cart
-* Automatically calculate the total amount
-* Place an order
-* Mock payment success/failure simulation
-* Responsive design for desktop and mobile devices
-* Light, Dark, and System theme support
+- Downloadable QR code for menu access and sharing  
+- QR code redirects customers directly to the menu page  
+- Browse the burger and drinks menu  
+- Filter menu by category 
+- Add items to the cart  
+- Update item quantities  
+- Remove items from the cart  
+- Automatically calculate the total amount  
+- Place an order  
+- Downloadable receipt after successful order  
+- Mock payment success/failure simulation  
+- Responsive design for desktop and mobile devices  
+- Light, Dark, and System theme support  
 
 ### Admin
 
-* View all customer orders
-* Update payment status
-* Delete orders *(added for live testing purposes)*
-* Light, Dark, and System theme support
+- View all customer orders  
+- Search orders by Order #
+- Filter orders by payment status
+- Sort orders in ascending or descending order  
+- Update payment status  
+- Delete orders *(added for live testing purposes)*
+- Responsive design for desktop and mobile devices  
+- Light, Dark, and System theme support  
 
 ---
 
