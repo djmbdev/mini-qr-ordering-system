@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { toPng } from "html-to-image";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -53,46 +54,33 @@ export function trimToDigits(value: string): string {
   return value.replace(/\D/g, "");
 }
 
-export function downloadSvgAsPng(
-  svg: SVGElement,
+export async function downloadElementAsImage(
+  element: HTMLElement,
   filename: string,
-  options?: { scale?: number; padding?: number; background?: string },
+  options?: {
+    backgroundColor?: string;
+    textColor?: string;
+    pixelRatio?: number;
+  },
 ) {
-  const { scale = 4, padding = 16, background = "#ffffff" } = options ?? {};
+  const textColor = options?.textColor ?? "#000000";
 
-  const svgData = new XMLSerializer().serializeToString(svg);
-  const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(svgBlob);
+  // Force text color before capturing the image since toPng has no text-color option
+  const previousColor = element.style.color;
+  element.style.color = textColor;
 
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  const img = new Image();
+  try {
+    const dataUrl = await toPng(element, {
+      backgroundColor: options?.backgroundColor ?? "#ffffff",
+      pixelRatio: options?.pixelRatio ?? 2,
+    });
 
-  img.onload = () => {
-    const qrWidth = img.width * scale;
-    const qrHeight = img.height * scale;
-    const pad = padding * scale;
-
-    canvas.width = qrWidth + pad * 2;
-    canvas.height = qrHeight + pad * 2;
-
-    if (ctx) {
-      // White or chosen color background, including the quiet-zone border
-      ctx.fillStyle = background;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, pad, pad, qrWidth, qrHeight);
-    }
-
-    URL.revokeObjectURL(url);
-
-    const pngFile = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.download = filename;
-    link.href = pngFile;
+    link.href = dataUrl;
     link.click();
-  };
-
-  img.src = url;
+  } finally {
+    element.style.color = previousColor;
+  }
 }
-
 export const animateOnce = true;

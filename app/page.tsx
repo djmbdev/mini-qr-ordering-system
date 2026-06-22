@@ -2,10 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { ThemeMenu } from "@/components/ui/theme-menu";
-import { downloadSvgAsPng } from "@/lib/utils";
+import { downloadElementAsImage } from "@/lib/utils";
 import { Download } from "lucide-react";
 import { motion, type Variants } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import QRCode from "react-qr-code";
 
 // Test purposes only, switches base url between production and local dev for the QR code link
@@ -23,14 +23,21 @@ const cardVariants: Variants = {
 
 export default function HomePage() {
   const qrRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
 
-  const handleDownload = () => {
-    const svg = qrRef.current?.querySelector("svg");
-    if (svg)
-      downloadSvgAsPng(svg, "qrcode.png", {
-        padding: 24,
-        background: "#fff",
+  const handleDownloadQRCode = async () => {
+    if (!qrRef.current) return;
+
+    setDownloading(true);
+    try {
+      await downloadElementAsImage(qrRef.current, "qrcode.png", {
+        pixelRatio: 4,
       });
+    } catch (error) {
+      console.error("QR download failed", error);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -77,12 +84,13 @@ export default function HomePage() {
               <QRCode value={qrValue} />
             </div>
             <Button
-              onClick={handleDownload}
+              onClick={handleDownloadQRCode}
               variant="outline"
               className="rounded-full"
+              disabled={downloading}
             >
               <Download className="mr-2 h-4 w-4" />
-              Download QR Code
+              {downloading ? "Downloading..." : "Download QR Code"}
             </Button>
           </div>
         </motion.div>

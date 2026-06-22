@@ -904,6 +904,8 @@ export default function DashboardPage() {
                       : "pending"}
                   </strong>
                   .
+                  {selectedOrder.status === "pending" &&
+                    " The order will be ready to serve."}
                 </span>
               ) : (
                 <span>Select an order to update.</span>
